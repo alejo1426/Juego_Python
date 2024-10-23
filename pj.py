@@ -7,7 +7,7 @@ class Nave:
         self.ancho = 50
         self.alto = 50
         self.speed = 5
-        self.color = "red"
+        self.color = "purple"
         self.rect = pygame.Rect(self.x, self.y,self.ancho, self.alto )
 
     def dibujar(self, ventana):
