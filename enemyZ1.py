@@ -9,11 +9,14 @@ class EnemyZ1:
         self.speed = 1
         self.color = "Blue"
         self.rect = pygame.Rect(self.x, self.y,self.ancho, self.alto )
+        self.imagen = pygame.image.load("imagenes/enemigo1.png") #cargar imagen
+        self.imagen = pygame.transform.scale(self.imagen, (self.ancho, self.alto)) #dimensionar imagen en tamaño del rectangulo
         self.vida = 3
 
     def dibujar(self, ventana):
         self.rect = pygame.Rect(self.x, self.y,self.ancho, self.alto )
-        pygame.draw.rect(ventana, self.color, self.rect)
+        #pygame.draw.rect(ventana, self.color, self.rect)
+        ventana.blit(self.imagen, (self.x, self.y)) #poner imagen sobre rectangulo
 
     def move (self):
         self.y += self.speed
