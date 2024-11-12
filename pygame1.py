@@ -2,40 +2,50 @@ import pygame
 from pj import Nave
 from enemyZ1 import EnemyZ1
 from bala import Bala
-
+from powerup import item
 import random
 
 pygame.init()
+pygame.mixer.init()
 
+# Obtener tamaño de pantalla del sistema
+info_pantalla = pygame.display.Info()
+ANCHO = int(info_pantalla.current_w * 0.9)  # Usar un 90% del ancho total
+ALTO = int(info_pantalla.current_h * 0.9)   # Usar un 90% del alto total
 
-#pip install pygame
+# Configurar la ventana
+VENTANA = pygame.display.set_mode((ANCHO, ALTO))
+pygame.display.set_caption("Juego adaptado a la pantalla")
 
-ANCHO = 1000
-ALTO = 800
-VENTANA = pygame.display.set_mode([ANCHO,ALTO])
+# Configuración del juego
 FPS = 60
-FUENTE = pygame.font.SysFont("Tymes new roman", 40)
-
+FUENTE = pygame.font.SysFont("Times New Roman", 40)
+Sonido_Disparo = pygame.mixer.Sound('assets/disparo.wav')
+Sonido_Muertepj = pygame.mixer.Sound('assets/muertePJ.wav')
+Sonido_MuerteEnemy = pygame.mixer.Sound('assets/muerteEnemy.wav')
 
 jugando = True
-
-reloj = pygame.time.Clock() 
+reloj = pygame.time.Clock()
 
 vida = 5
 puntos = 0
 
 tiempo_pasado = 0
 tiempo_entre_enemigos = 500
+tiempo_entre_power = 700
 
-cubo = Nave(ANCHO/2,ALTO-75)
+# Crear la nave
+cubo = Nave(ANCHO / 2, ALTO - 75)
 
 enemigos = []
 balas = []
+items = []
 
 ultima_bala = 0
 tiempo_entre_balas = 100
 
-enemigos.append(EnemyZ1(ANCHO/2, 100))
+enemigos.append(EnemyZ1(ANCHO / 2, 100))
+items.append(item(ANCHO / 2, 100))
 
 def crear_bala():
     global ultima_bala
@@ -43,6 +53,7 @@ def crear_bala():
     if pygame.time.get_ticks() - ultima_bala > tiempo_entre_balas:
        balas.append(Bala(cubo.rect.centerx, cubo.rect.centery))
        ultima_bala = pygame.time.get_ticks()
+       Sonido_Disparo.play()
 
 def gestionar_teclas(teclas):
     if teclas[pygame.K_w]:
@@ -64,7 +75,10 @@ while jugando and vida > 0:
     if tiempo_pasado > tiempo_entre_enemigos:
         enemigos.append(EnemyZ1(random.randint(0,ANCHO),-100))
         tiempo_pasado = 0
-
+    
+    if tiempo_pasado > tiempo_entre_power:
+        items.append(item(random.randint(0,ANCHO), -100))
+        tiempo_pasado = 0
 
     eventos = pygame.event.get()
 
@@ -105,11 +119,16 @@ while jugando and vida > 0:
                 puntos += 1
 
         if enemigo.vida <= 0:
+            Sonido_MuerteEnemy.play()
             enemigos.remove(enemigo)
 
     for bala in balas:
         bala.dibujar(VENTANA)
         bala.movimiento()
+
+    for power in items:
+        power.dibujar(VENTANA)
+        power.move()
 
 
     
@@ -118,6 +137,7 @@ while jugando and vida > 0:
 
     pygame.display.update()
 
+Sonido_Muertepj.play()
 pygame.quit()
 
 

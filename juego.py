@@ -1,60 +1,140 @@
 import pygame
 from pj import Nave
 from enemyZ1 import EnemyZ1
+from bala import Bala
 import random
 
-ANCHO = 1000
-ALTO = 800
-VENTANA = pygame.display.set_mode([ANCHO, ALTO])
+pygame.init()
+pygame.mixer.init()
+
+# Obtener tamaño de pantalla del sistema
+info_pantalla = pygame.display.Info()
+ANCHO = int(info_pantalla.current_w * 0.9)  # Usar un 90% del ancho total
+ALTO = int(info_pantalla.current_h * 0.9)   # Usar un 90% del alto total
+
+# Configurar la ventana
+VENTANA = pygame.display.set_mode((ANCHO, ALTO))
+pygame.display.set_caption("Juego adaptado a la pantalla")
+
+# Configuración del juego
 FPS = 60
+FUENTE = pygame.font.SysFont("Times New Roman", 40)
+Sonido_Disparo = pygame.mixer.Sound('assets/disparo.wav')
+Sonido_Muertepj = pygame.mixer.Sound('assets/muertePJ.wav')
+Sonido_MuerteEnemy = pygame.mixer.Sound('assets/muerteEnemy.wav')
 
-PLAYING = True
-
+jugando = True
 reloj = pygame.time.Clock()
 
-tiempo = 0
-spawn = 500
+vida = 5
+puntos = 0
+
+tiempo_pasado = 0
+tiempo_entre_enemigos = 500
+
+# Crear la nave
+cubo = Nave(ANCHO / 2, ALTO - 75)
+
+enemigos = []
+balas = []
+
+ultima_bala = 0
+tiempo_entre_balas = 100
+
+enemigos.append(EnemyZ1(ANCHO / 2, 100))
+
+def crear_bala():
+    global ultima_bala
+
+    if pygame.time.get_ticks() - ultima_bala > tiempo_entre_balas:
+       balas.append(Bala(cubo.rect.centerx, cubo.rect.centery))
+       ultima_bala = pygame.time.get_ticks()
+       Sonido_Disparo.play()
+
+def gestionar_teclas(teclas):
+    if teclas[pygame.K_w]:
+        cubo.y -= cubo.speed
+    if teclas[pygame.K_s]:
+        cubo.y += cubo.speed
+    if teclas[pygame.K_a]:
+        cubo.x -= cubo.speed
+    if teclas[pygame.K_d]:
+        cubo.x += cubo.speed
+    if teclas[pygame.K_SPACE]:
+        crear_bala()
 
 
-nave = Nave(100, 100)
+while jugando and vida > 0:
 
-enemys = []
-enemys.append(EnemyZ1(ANCHO/2, -75))
+    tiempo_pasado += reloj.tick(FPS)
 
-def Orden_Keys(keys):
-    if keys[pygame.K_w]:
-        nave.y -= nave.speed
-    if keys[pygame.K_s]:
-        nave.y += nave.speed
-    if keys[pygame.K_a]:
-        nave.x -= nave.speed
-    if keys[pygame.K_d]:
-        nave.x += nave.speed
+    if tiempo_pasado > tiempo_entre_enemigos:
+        enemigos.append(EnemyZ1(random.randint(0,ANCHO),-100))
+        tiempo_pasado = 0
 
-
-while PLAYING:
-    tiempo += reloj.tick(FPS)
-    if tiempo > spawn:
-        enemys.append(EnemyZ1(random.randint(0,ANCHO),-100))
-        tiempo = 0
 
     eventos = pygame.event.get()
 
-    keys = pygame.key.get_pressed()
+    teclas = pygame.key.get_pressed()
 
-    Orden_Keys(keys)
+    texto_vida = FUENTE.render(f"Vida:  {vida}", True, "white")
+
+    texto_puntos = FUENTE.render(f"Puntos:  {puntos}", True, "white")
+
+
+
+    gestionar_teclas(teclas)
 
     for evento in eventos:
         if evento.type == pygame.QUIT:
-            PLAYING = False
+            jugando = False
 
     VENTANA.fill("black")
-    nave.dibujar(VENTANA)
+    cubo.dibujar(VENTANA)
 
-    for enemy in enemys:
-        enemy.dibujar(VENTANA)
-        enemy.move()
+    for enemigo in enemigos:
+        enemigo.dibujar(VENTANA)
+        enemigo.move()
+
+        if pygame.Rect.colliderect(cubo.rect, enemigo.rect):
+            vida -= 1 
+            print(f"te cagaste {vida} las vidas")
+            enemigos.remove(enemigo)
+
+        if enemigo.y > ALTO:
+            puntos += 1
+            enemigos.remove(enemigo)
+        
+        for bala in balas:
+            if pygame.Rect.colliderect(bala.rect, enemigo.rect):
+                enemigo.vida -= 1
+                balas.remove(bala)
+                puntos += 1
+
+        if enemigo.vida <= 0:
+            Sonido_MuerteEnemy.play()
+            enemigos.remove(enemigo)
+
+    for bala in balas:
+        bala.dibujar(VENTANA)
+        bala.movimiento()
+
+
+    
+    VENTANA.blit(texto_vida, (20,20))
+    VENTANA.blit(texto_puntos, (20,50))
 
     pygame.display.update()
+
+Sonido_Muertepj.play()
+pygame.quit()
+
+
+nombre = input ("Introduce tu nombre:  ")
+
+with open('puntuaciones.txt', 'a') as archivo:
+
+
+    archivo.write(f"{nombre} - {puntos}\n")
 
 quit()
