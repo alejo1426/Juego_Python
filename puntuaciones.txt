@@ -9,3 +9,5 @@ luis2 - 32
 parchon - 121
 Cachon - 274
 & C:/Python312/python.exe c:/Users/ALEJO/Juego_Python/pygame1.py - 0
+& C:/Python312/python.exe c:/Users/ALEJO/Juego_Python/pygame1.py - 11
+& C:/Python312/python.exe c:/Users/ALEJO/Juego_Python/pygame1.py - 3

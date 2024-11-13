@@ -9,13 +9,12 @@ class Bala:
         self.speed = 10
         self.color = "white"
         self.rect = pygame.Rect(self.x, self.y,self.ancho, self.alto )
-        self.imagen = pygame.image.load("imagenes/laser1.png") #cargar imagen
-        self.imagen = pygame.transform.scale(self.imagen, (self.ancho, self.alto)) #dimensionar imagen en tamaño del rectangulo
+        self.imagen = pygame.image.load("imagenes/laser1.png")  # Cargar imagen
+        self.imagen = pygame.transform.scale(self.imagen, (self.ancho, self.alto))  # Escalar imagen
 
     def dibujar(self, ventana):
-        self.rect = pygame.Rect(self.x, self.y,self.ancho, self.alto )
-        #pygame.draw.rect(ventana, self.color, self.rect)
-        ventana.blit(self.imagen, (self.x, self.y)) #poner imagen sobre rectangulo
+        ventana.blit(self.imagen, (self.x, self.y))  # Dibuja la bala
 
-    def movimiento (self):
+    def movimiento(self):
         self.y -= self.speed
+        self.rect.y = self.y  # Actualiza la posición del rectángulo
