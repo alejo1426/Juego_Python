@@ -16,7 +16,7 @@ ALTO = int(info_pantalla.current_h * 0.8)
 
 # Configurar la ventana
 VENTANA = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("Juego adaptado a la pantalla")
+pygame.display.set_caption("UNIVERSAL COMBAT")
 
 # Cargar la imagen de fondo
 fondo = pygame.image.load('imagenes/infierno.png')

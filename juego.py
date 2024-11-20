@@ -14,7 +14,7 @@ ALTO = int(info_pantalla.current_h * 0.9)   # Usar un 90% del alto total
 
 # Configurar la ventana
 VENTANA = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("Juego adaptado a la pantalla")
+pygame.display.set_caption("UNIVWERSAL COMBAT")
 
 # Configuración del juego
 FPS = 60
