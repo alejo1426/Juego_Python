@@ -1,7 +1,7 @@
 import os
 import pygame
 from pj import Nave
-from enemyZ1 import EnemyZ1
+from enemyZ1 import EnemyZ2
 from bala import Bala
 from powerup import item
 import random
@@ -19,7 +19,7 @@ VENTANA = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Juego adaptado a la pantalla")
 
 # Cargar la imagen de fondo
-fondo = pygame.image.load('imagenes/espacio.png')
+fondo = pygame.image.load('imagenes/desierto.png')
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 # Configuración del juego
@@ -58,7 +58,7 @@ tiempo_entre_balas = 100
 powerup = None
 
 # Agregar un enemigo inicial
-enemigos.append(EnemyZ1(ANCHO / 2, 100))
+enemigos.append(EnemyZ2(ANCHO / 2, 100))
 
 # Función para mostrar el mensaje de nivel completado
 def mostrar_mensaje_nivel_completado():
@@ -70,13 +70,13 @@ def mostrar_mensaje_nivel_completado():
                 quit()
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RETURN:
-                    os.system("python N2.py")
+                    os.system("python N3.py")
                     pygame.quit()
                     quit()
 
         VENTANA.fill("black")
         texto_completado = FUENTE.render("¡Nivel completado!", True, "white")
-        texto_continuar = FUENTE.render("Presiona ENTER para ir al Nivel 2", True, "yellow")
+        texto_continuar = FUENTE.render("Presiona ENTER para ir al Nivel 3", True, "yellow")
         VENTANA.blit(texto_completado, (ANCHO // 2 - texto_completado.get_width() // 2, ALTO // 2 - 50))
         VENTANA.blit(texto_continuar, (ANCHO // 2 - texto_continuar.get_width() // 2, ALTO // 2 + 20))
         pygame.display.update()
@@ -114,7 +114,7 @@ def mostrar_game_over():
                     if evento.key == pygame.K_RETURN:
                         # Guardar la puntuación en el archivo
                         with open('puntuaciones.txt', 'a') as archivo:
-                            archivo.write(f"{text} - {puntos} - {'Alcanzo Nivel 1'}\n")
+                            archivo.write(f"{text} - {puntos} - {'Alcanzo Nivel 2'}\n")
                         pygame.quit()  # Cierra la ventana del juego después de guardar la puntuación
                         quit()
                     elif evento.key == pygame.K_BACKSPACE:
@@ -171,7 +171,7 @@ while jugando:
     tiempo_pasado += reloj.tick(FPS)
 
     # Verificar si el jugador alcanzó la meta de puntos
-    if puntos >= 300:
+    if puntos >= 600:
         mostrar_mensaje_nivel_completado()
         puntos = 0
         enemigos.clear()
@@ -180,7 +180,7 @@ while jugando:
     # Lógica para generar enemigos
     if pygame.time.get_ticks() - ultima_aparicion_enemigos > tiempo_entre_enemigos:
         x_pos = random.randint(0, ANCHO - 50)
-        enemigos.append(EnemyZ1(x_pos, -100))
+        enemigos.append(EnemyZ2(x_pos, -100))
         ultima_aparicion_enemigos = pygame.time.get_ticks()
 
     # Verificar si es momento de generar un power-up
