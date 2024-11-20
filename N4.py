@@ -323,7 +323,6 @@ while jugando:
 
     pygame.display.update()
 
-Sonido_Muertepj.play()
 pygame.quit()
 
 quit()

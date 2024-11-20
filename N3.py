@@ -260,7 +260,7 @@ while jugando:
                 Sonido_MuerteEnemy.play()
                 if enemigo in enemigos:
                     enemigos.remove(enemigo)
-                    puntos += 100
+                    puntos += 5
 
     # Actualizar y dibujar balas
     for bala in balas[:]:
